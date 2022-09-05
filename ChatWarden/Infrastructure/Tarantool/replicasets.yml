@@ -1,0 +1,18 @@
+﻿router:
+  instances:
+  - router
+  roles:
+  - crud-router
+  - cw
+
+shard1:
+  instances:
+  - s1-master
+  - s1-replica1
+  roles:
+  - crud-storage
+  - cw
+  weight: 11
+  all_rw: false
+  vshard_group: default
+

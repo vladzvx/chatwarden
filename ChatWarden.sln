@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatWarden", "ChatWarden\ChatWarden.csproj", "{130A68FF-C7EB-4091-AFE1-B3C9AF7DE286}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{1A1F994C-8354-437B-B13A-190051872421}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{130A68FF-C7EB-4091-AFE1-B3C9AF7DE286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{130A68FF-C7EB-4091-AFE1-B3C9AF7DE286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{130A68FF-C7EB-4091-AFE1-B3C9AF7DE286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{130A68FF-C7EB-4091-AFE1-B3C9AF7DE286}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A1F994C-8354-437B-B13A-190051872421}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A1F994C-8354-437B-B13A-190051872421}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A1F994C-8354-437B-B13A-190051872421}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A1F994C-8354-437B-B13A-190051872421}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {37F41074-CD00-4E17-B03F-D0A14DD307D0}
+	EndGlobalSection
+EndGlobal

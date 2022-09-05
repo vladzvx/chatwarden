@@ -1,0 +1,38 @@
+﻿cw.router:
+  advertise_uri: localhost:3301
+  http_port: 8081
+
+cw.s1-master:
+  advertise_uri: localhost:3302
+  http_port: 8082
+  http_port_enabled: false
+
+cw.s1-replica1:
+  advertise_uri: localhost:3303
+  http_port: 8083
+  http_port_enabled: false
+
+cw.s1-replica2:
+  advertise_uri: localhost:3304
+  http_port: 8084
+  http_port_enabled: false
+
+cw.s2-master:
+  advertise_uri: localhost:3305
+  http_port: 8085
+  http_port_enabled: false
+
+cw.s2-replica1:
+  advertise_uri: localhost:3306
+  http_port: 8086
+  http_port_enabled: false
+
+cw.s2-replica2:
+  advertise_uri: localhost:3307
+  http_port: 8087
+  http_port_enabled: false
+
+
+cw-stateboard:
+  listen: localhost:4401
+  password: passwd
