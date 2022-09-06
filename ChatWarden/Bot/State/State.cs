@@ -34,5 +34,16 @@ namespace ChatWarden.Bot.State
         {
             await _box.Call("set_status", TarantoolTuple.Create(id, BotId, ChatId, new byte[1] { (byte)userStatus }));
         }
+
+        internal async Task AddMessage(long userId, long chatId, long messageNumber, long time)
+        {
+            await _box.Call("add_message", TarantoolTuple.Create(userId, chatId, messageNumber, time));
+        }
+
+        internal async Task<long[]> GetMessages(long userId, long chatId)
+        {
+            var tmp = await _box.Call<TarantoolTuple<long, long>, long[]>("get_messages", TarantoolTuple.Create(userId, chatId));
+            return tmp.Data[0];
+        }
     }
 }

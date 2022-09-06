@@ -1,5 +1,6 @@
 ﻿local cartridge = require('cartridge')
 local crud = require('crud')
+local uuid = require('uuid')
 local role_name = 'cw'
 
 
@@ -30,7 +31,31 @@ local function init(opts)
             if_not_exists = true
         });
 
+        local messages = box.schema.space.create('messages', {
+                format = {
+                    {name = 'id', type = 'uuid'},--1
+                    {name = 'user_id', type = 'integer'},--2
+                    {name = 'chat_id', type = 'integer'},--3
+                    {name = 'message_number', type = 'integer'},--4
+                    {name = 'time', type = 'integer'},--5
+                    {name = 'bucket_id', type = 'unsigned'},--6
+                },
+                if_not_exists = true,
+            });
+        messages:create_index('id', {
+            parts = {'id'}, unique = true,
+            if_not_exists = true});
 
+        messages:create_index('ids', {type = 'TREE',
+            parts = {
+                {field ='user_id', is_nullable = false}, 
+                {field ='chat_id', is_nullable = false}, 
+                {field ='message_number', is_nullable = false}
+            }, if_not_exists = true,unique = false});
+
+        messages:create_index('bucket_id', {
+            parts = {'bucket_id'}, unique = false,
+            if_not_exists = true });
     end
 end
 
@@ -59,6 +84,24 @@ function get_status(user_id,bot_id,chat_id)
     end
 end
 
+function add_message(user_id,chat_id,message_number,time)
+    crud.insert_object("messages",{id = uuid.new(),user_id = user_id,chat_id = chat_id,message_number = message_number, time = time})
+end
+
+function get_messages(user_id,chat_id)
+    local res = {}
+    local tmp = crud.select("messages",{{'==', 'ids', {user_id,chat_id}}},{fields={"message_number"}})
+    if tmp~=nil then
+        local count = table.maxn(tmp.rows)
+        if count>0 then
+            for i=1,count,1 do
+                table.insert(res,tmp.rows[i][1])
+            end
+        end
+    end
+    return res
+end
+
 return {
     init = init,
     stop = stop,
@@ -67,4 +110,7 @@ return {
     test = test,
     set_status = set_status,
     get_status = get_status,
+
+    add_message = add_message,
+    get_messages = get_messages,
 }

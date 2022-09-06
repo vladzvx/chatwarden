@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProGaudi.Tarantool.Client;
 using ProGaudi.Tarantool.Client.Model;
 using System;
+using System.Linq;
 
 namespace ChatWarden.Tests
 {
@@ -156,6 +157,104 @@ namespace ChatWarden.Tests
             localState.SetStatus(user, status2).Wait();
             var readedStatus2 = localState.GetStatus(user).Result;
             Assert.IsTrue(readedStatus2 == status2);
+        }
+
+        [TestMethod]
+        public void AddMessage_GetMessagesTest_OneChatOneUser()
+        {
+            var user1 = PseudoUnicIdsGenerator.Get();
+            var chatid = PseudoUnicIdsGenerator.Get();
+            var number1 = 1L;
+            var number2 = 2L;
+            var number3 = 3L;
+            state?.AddMessage(user1, chatid, number1, 11).Wait();
+            state?.AddMessage(user1, chatid, number2, 11).Wait();
+            state?.AddMessage(user1, chatid, number3, 11).Wait();
+            var q = state?.GetMessages(user1, chatid).Result;
+            Assert.IsNotNull(q);
+            Assert.IsTrue(q.Length == 3);
+            Assert.IsTrue(q.Contains(number1));
+            Assert.IsTrue(q.Contains(number2));
+            Assert.IsTrue(q.Contains(number3));
+        }
+
+        [TestMethod]
+        public void AddMessage_GetMessagesTest_OneChatOneUserDuplicatedValues()
+        {
+            var user1 = PseudoUnicIdsGenerator.Get();
+            var chatid = PseudoUnicIdsGenerator.Get();
+            var number1 = 1L;
+            var number2 = 2L;
+            var number3 = 3L;
+            state?.AddMessage(user1, chatid, number1, 11).Wait();
+            state?.AddMessage(user1, chatid, number1, 11).Wait();
+            state?.AddMessage(user1, chatid, number1, 11).Wait();
+            state?.AddMessage(user1, chatid, number2, 11).Wait();
+            state?.AddMessage(user1, chatid, number3, 11).Wait();
+            var q = state?.GetMessages(user1, chatid).Result;
+            Assert.IsNotNull(q);
+            Assert.IsTrue(q.Length == 5);
+            Assert.IsTrue(q.Contains(number1));
+            Assert.IsTrue(q.Count(item => item == number1) == 3);
+            Assert.IsTrue(q.Contains(number2));
+            Assert.IsTrue(q.Contains(number3));
+        }
+
+
+        [TestMethod]
+        public void AddMessage_GetMessagesTest_TwoChatsOneUser()
+        {
+            var user1 = PseudoUnicIdsGenerator.Get();
+            var chatid1 = PseudoUnicIdsGenerator.Get();
+            var chatid2 = PseudoUnicIdsGenerator.Get();
+            var number1 = 1L;
+            var number2 = 2L;
+            var number3 = 3L;
+            state?.AddMessage(user1, chatid1, number1, 11).Wait();
+            state?.AddMessage(user1, chatid1, number2, 11).Wait();
+            state?.AddMessage(user1, chatid1, number3, 11).Wait();
+            state?.AddMessage(user1, chatid2, number3, 11).Wait();
+            var q1 = state?.GetMessages(user1, chatid1).Result;
+            var q2 = state?.GetMessages(user1, chatid2).Result;
+            Assert.IsNotNull(q1);
+            Assert.IsNotNull(q2);
+            Assert.IsTrue(q1.Length == 3);
+            Assert.IsTrue(q2.Length == 1);
+            Assert.IsTrue(q1.Contains(number1));
+            Assert.IsTrue(q1.Contains(number2));
+            Assert.IsTrue(q1.Contains(number3));
+            Assert.IsTrue(q2.Contains(number3));
+        }
+
+        [TestMethod]
+        public void AddMessage_GetMessagesTest_TwoChatsTwoUsers()
+        {
+            var user1 = PseudoUnicIdsGenerator.Get();
+            var user2 = PseudoUnicIdsGenerator.Get();
+            var chatid1 = PseudoUnicIdsGenerator.Get();
+            var chatid2 = PseudoUnicIdsGenerator.Get();
+            var number1 = 1L;
+            var number2 = 2L;
+            var number3 = 3L;
+            state?.AddMessage(user1, chatid1, number1, 11).Wait();
+            state?.AddMessage(user2, chatid1, number1, 11).Wait();
+            state?.AddMessage(user1, chatid1, number2, 11).Wait();
+            state?.AddMessage(user1, chatid1, number3, 11).Wait();
+            state?.AddMessage(user1, chatid2, number3, 11).Wait();
+            var q1 = state?.GetMessages(user1, chatid1).Result;
+            var q2 = state?.GetMessages(user1, chatid2).Result;
+            var q3 = state?.GetMessages(user2, chatid1).Result;
+            Assert.IsNotNull(q1);
+            Assert.IsNotNull(q2);
+            Assert.IsNotNull(q3);
+            Assert.IsTrue(q1.Length == 3);
+            Assert.IsTrue(q2.Length == 1);
+            Assert.IsTrue(q3.Length == 1);
+            Assert.IsTrue(q1.Contains(number1));
+            Assert.IsTrue(q1.Contains(number2));
+            Assert.IsTrue(q1.Contains(number3));
+            Assert.IsTrue(q2.Contains(number3));
+            Assert.IsTrue(q3.Contains(number1));
         }
     }
 }
