@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatWarden", "ChatWarden\Ch
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{1A1F994C-8354-437B-B13A-190051872421}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatWarden.Tests", "ChatWarden.Tests\ChatWarden.Tests.csproj", "{D637A78B-E7AD-4A5C-B5EB-1D654CAD8910}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1A1F994C-8354-437B-B13A-190051872421}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A1F994C-8354-437B-B13A-190051872421}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A1F994C-8354-437B-B13A-190051872421}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D637A78B-E7AD-4A5C-B5EB-1D654CAD8910}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D637A78B-E7AD-4A5C-B5EB-1D654CAD8910}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D637A78B-E7AD-4A5C-B5EB-1D654CAD8910}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D637A78B-E7AD-4A5C-B5EB-1D654CAD8910}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

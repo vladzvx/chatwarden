@@ -13,4 +13,8 @@
     <PackageReference Include="progaudi.tarantool" Version="0.15.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Bot\Services\" />
+  </ItemGroup>
+
 </Project>

@@ -13,6 +13,7 @@ services:
       dockerfile: ChatWarden/Dockerfile
     environment:
       TARANTOOL_CNNSTR: "${TARANTOOL_USER}:${TARANTOOL_PWD}@${TARANTOOL_HOST}:${TARANTOOL_INTERNAL_PORT}"
+      TOKEN: "${TOKEN}"
 
   tarantool:
     container_name: Tarantool
