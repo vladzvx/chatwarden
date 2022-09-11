@@ -9,6 +9,34 @@ local function init(opts)
         memtx_memory= 256 * 1024 * 1024
     } 
     if opts.is_master then
+        local bot_space = box.schema.space.create('bot_profiles', {
+                format = {
+                    {name = 'bot_id', type = 'integer'},--1
+                    {name = 'chat_id', type = 'integer'},--2
+
+                    {name = 'state', type = 'string'},--3
+                    {name = 'help_text', type = 'string'},--4
+
+                    {name = 'ban_replics', type = 'array'},--5
+                    {name = 'media_replics', type = 'array'},--6
+                    {name = 'restrict_replics', type = 'array'},--7
+
+                    {name = 'bucket_id', type = 'unsigned'},--8
+                },
+                if_not_exists = true,
+            });
+
+        bot_space:create_index('id', {type = 'TREE',
+            parts = { 
+                {field ='bot_id', is_nullable = false},
+                {field ='chat_id', is_nullable = false}
+            },
+            if_not_exists = true});
+
+        bot_space:create_index('bucket_id', {
+            parts = {'bucket_id'}, unique = false,
+            if_not_exists = true
+            });
 
         local users_space = box.schema.space.create('users', {
                 format = {
@@ -70,6 +98,11 @@ end
 --function set_status(user_id,bot_id,chat_id,status)
  --   crud.replace_object("users",{user_id = user_id,bot_id = bot_id,chat_id = chat_id, status = status})
 --end
+
+function add_chat(bot_id,chat_id,state,help_text)
+    crud.insert_object("bot_profiles",{bot_id = bot_id,chat_id = chat_id,state = state,help_text = help_text
+    ,ban_replics = {},media_replics = {},restrict_replics = {}})
+end
 
 function set_status(user_id,bot_id,chat_id,status)
     crud.upsert_object("users",{user_id = user_id,bot_id = bot_id,chat_id = chat_id,status = status},{{'=', 'status', status}})
