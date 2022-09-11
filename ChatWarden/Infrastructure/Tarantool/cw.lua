@@ -104,6 +104,31 @@ function add_chat(bot_id,chat_id,state,help_text)
     ,ban_replics = {},media_replics = {},restrict_replics = {}})
 end
 
+function get_state (bot_id,chat_id)
+    return get_field(bot_id,chat_id,"\0",3)
+end
+
+function set_state (bot_id,chat_id,state)
+    crud.update("bot_profiles",{bot_id,chat_id},{{'=', 'state', state}})
+end
+
+function set_help (bot_id,chat_id,help_text)
+    crud.update("bot_profiles",{bot_id,chat_id},{{'=', 'help_text', help_text}})
+end
+
+function get_help (bot_id,chat_id)
+    return get_field(bot_id,chat_id,"",4)
+end
+
+function get_field (bot_id,chat_id,defa, numb)
+    local res = crud.select("bot_profiles",{{'==', 'id', {bot_id,chat_id}}}).rows
+    if  table.maxn(res) == 0 then
+        return defa
+    else 
+        return res[1][numb]
+    end
+end
+
 function set_status(user_id,bot_id,chat_id,status)
     crud.upsert_object("users",{user_id = user_id,bot_id = bot_id,chat_id = chat_id,status = status},{{'=', 'status', status}})
 end
@@ -146,4 +171,5 @@ return {
 
     add_message = add_message,
     get_messages = get_messages,
+    set_help = set_help,
 }

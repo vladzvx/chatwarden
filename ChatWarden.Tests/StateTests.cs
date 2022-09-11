@@ -1,4 +1,4 @@
-using ChatWarden.Bot.State;
+Ôªøusing ChatWarden.Bot.State;
 using ChatWarden.Tests.Support;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProGaudi.Tarantool.Client;
@@ -16,9 +16,9 @@ namespace ChatWarden.Tests
         static long chatId;
         static long botId;
         [ClassInitialize]
-#pragma warning disable IDE0060 // ”‰‡ÎËÚÂ ÌÂËÒÔÓÎ¸ÁÛÂÏ˚È Ô‡‡ÏÂÚ
+#pragma warning disable IDE0060 // –£–¥–∞–ª–∏—Ç–µ –Ω–µ–∏—Å–ø–æ–ª—å–∑—É–µ–º—ã–π –ø–∞—Ä–∞–º–µ—Ç—Ä
         public static void ClassInitialize(TestContext context)
-#pragma warning restore IDE0060 // ”‰‡ÎËÚÂ ÌÂËÒÔÓÎ¸ÁÛÂÏ˚È Ô‡‡ÏÂÚ
+#pragma warning restore IDE0060 // –£–¥–∞–ª–∏—Ç–µ –Ω–µ–∏—Å–ø–æ–ª—å–∑—É–µ–º—ã–π –ø–∞—Ä–∞–º–µ—Ç—Ä
         {
             chatId = PseudoUnicIdsGenerator.Get();
             botId = PseudoUnicIdsGenerator.Get();
@@ -31,94 +31,94 @@ namespace ChatWarden.Tests
         }
 
         [TestMethod]
-        public void GetStatus_NoUser()
+        public void GetUserStatus_NoUser()
         {
             var user = PseudoUnicIdsGenerator.Get();
-            var readedStatus1 = state?.GetStatus(user).Result;
+            var readedStatus1 = state?.GetUserStatus(user).Result;
             Assert.IsNotNull(readedStatus1);
             Assert.IsTrue(readedStatus1.Value == UserStatus.Common);
         }
 
         [TestMethod]
-        public void SetStatus_GetStatus_OneBotOneUserOneIteration()
+        public void SetUserStatus_GetUserStatus_OneBotOneUserOneIteration()
         {
             var user = PseudoUnicIdsGenerator.Get();
             var status = UserStatus.Admin;
-            state?.SetStatus(user, status).Wait();
-            var readedStatus1 = state?.GetStatus(user).Result;
+            state?.SetUserStatus(user, status).Wait();
+            var readedStatus1 = state?.GetUserStatus(user).Result;
             Assert.IsNotNull(readedStatus1);
             Assert.IsTrue(readedStatus1.Value == status);
         }
 
         [TestMethod]
-        public void SetStatus_GetStatus_OneBotOneUserThreeIterations()
+        public void SetUserStatus_GetUserStatus_OneBotOneUserThreeIterations()
         {
             var user = PseudoUnicIdsGenerator.Get();
             var status = UserStatus.Admin;
-            state?.SetStatus(user, status).Wait();
-            var readedStatus1 = state?.GetStatus(user).Result;
+            state?.SetUserStatus(user, status).Wait();
+            var readedStatus1 = state?.GetUserStatus(user).Result;
             Assert.IsNotNull(readedStatus1);
             Assert.IsTrue(readedStatus1.Value == status);
 
             status = UserStatus.SuperAdmin;
-            state?.SetStatus(user, status).Wait();
-            var readedStatus2 = state?.GetStatus(user).Result;
+            state?.SetUserStatus(user, status).Wait();
+            var readedStatus2 = state?.GetUserStatus(user).Result;
             Assert.IsNotNull(readedStatus2);
             Assert.IsTrue(readedStatus2.Value == status);
 
             status = UserStatus.Common;
-            state?.SetStatus(user, status).Wait();
-            var readedStatus3 = state?.GetStatus(user).Result;
+            state?.SetUserStatus(user, status).Wait();
+            var readedStatus3 = state?.GetUserStatus(user).Result;
             Assert.IsNotNull(readedStatus3);
             Assert.IsTrue(readedStatus3.Value == status);
         }
 
         [TestMethod]
-        public void SetStatus_GetStatus_OneBotTwoUsersOneIteration()
+        public void SetUserStatus_GetUserStatus_OneBotTwoUsersOneIteration()
         {
             var user1 = PseudoUnicIdsGenerator.Get();
             var user2 = PseudoUnicIdsGenerator.Get();
             var status1 = UserStatus.Admin;
             var status2 = UserStatus.Common;
 
-            state?.SetStatus(user1, status1).Wait();
-            var readedStatus1 = state?.GetStatus(user1).Result;
+            state?.SetUserStatus(user1, status1).Wait();
+            var readedStatus1 = state?.GetUserStatus(user1).Result;
             Assert.IsNotNull(readedStatus1);
             Assert.IsTrue(readedStatus1.Value == status1);
 
-            state?.SetStatus(user2, status2).Wait();
-            var readedStatus2 = state?.GetStatus(user2).Result;
+            state?.SetUserStatus(user2, status2).Wait();
+            var readedStatus2 = state?.GetUserStatus(user2).Result;
             Assert.IsNotNull(readedStatus2);
             Assert.IsTrue(readedStatus2.Value == status2);
         }
 
         [TestMethod]
-        public void SetStatus_GetStatus_OneBotTwoUsersTwoIterations()
+        public void SetUserStatus_GetUserStatus_OneBotTwoUsersTwoIterations()
         {
             var user1 = PseudoUnicIdsGenerator.Get();
             var user2 = PseudoUnicIdsGenerator.Get();
             var status1 = UserStatus.Admin;
             var status2 = UserStatus.Common;
 
-            state?.SetStatus(user1, status1).Wait();
-            var readedStatus1 = state?.GetStatus(user1).Result;
+            state?.SetUserStatus(user1, status1).Wait();
+            var readedStatus1 = state?.GetUserStatus(user1).Result;
             Assert.IsNotNull(readedStatus1);
             Assert.IsTrue(readedStatus1.Value == status1);
 
-            state?.SetStatus(user2, status2).Wait();
-            var readedStatus2 = state?.GetStatus(user2).Result;
+            state?.SetUserStatus(user2, status2).Wait();
+            var readedStatus2 = state?.GetUserStatus(user2).Result;
             Assert.IsNotNull(readedStatus2);
             Assert.IsTrue(readedStatus2.Value == status2);
 
             status2 = UserStatus.SuperAdmin;
-            state?.SetStatus(user2, status2).Wait();
-            var readedStatus3 = state?.GetStatus(user2).Result;
+            state?.SetUserStatus(user2, status2).Wait();
+            var readedStatus3 = state?.GetUserStatus(user2).Result;
             Assert.IsNotNull(readedStatus3);
             Assert.IsTrue(readedStatus3.Value == status2);
         }
 
         [TestMethod]
-        public void SetStatus_GetStatus_TwoBotsOneChatOneUserOneIteration()
+        public void SetUserStatus_GetUserStatus_TwoBotsOneChatOneUserOneIteration()
         {
             //var localChat = PseudoUnicIdsGenerator.Get();
             var localBot = PseudoUnicIdsGenerator.Get();
@@ -128,18 +128,18 @@ namespace ChatWarden.Tests
             var user = PseudoUnicIdsGenerator.Get();
             var status = UserStatus.Admin;
             var status2 = UserStatus.Common;
-            state?.SetStatus(user, status).Wait();
-            var readedStatus1 = state?.GetStatus(user).Result;
+            state?.SetUserStatus(user, status).Wait();
+            var readedStatus1 = state?.GetUserStatus(user).Result;
             Assert.IsNotNull(readedStatus1);
             Assert.IsTrue(readedStatus1.Value == status);
 
-            localState.SetStatus(user, status2).Wait();
-            var readedStatus2 = localState.GetStatus(user).Result;
+            localState.SetUserStatus(user, status2).Wait();
+            var readedStatus2 = localState.GetUserStatus(user).Result;
             Assert.IsTrue(readedStatus2 == status2);
         }
 
         [TestMethod]
-        public void SetStatus_GetStatus_OneBotTwoChatsOneUserOneIteration()
+        public void SetUserStatus_GetUserStatus_OneBotTwoChatsOneUserOneIteration()
         {
             var localChat = PseudoUnicIdsGenerator.Get();
             //var localBot = PseudoUnicIdsGenerator.Get();
@@ -149,14 +149,131 @@ namespace ChatWarden.Tests
             var user = PseudoUnicIdsGenerator.Get();
             var status = UserStatus.Admin;
             var status2 = UserStatus.Common;
-            state?.SetStatus(user, status).Wait();
-            var readedStatus1 = state?.GetStatus(user).Result;
+            state?.SetUserStatus(user, status).Wait();
+            var readedStatus1 = state?.GetUserStatus(user).Result;
             Assert.IsNotNull(readedStatus1);
             Assert.IsTrue(readedStatus1.Value == status);
 
-            localState.SetStatus(user, status2).Wait();
-            var readedStatus2 = localState.GetStatus(user).Result;
+            localState.SetUserStatus(user, status2).Wait();
+            var readedStatus2 = localState.GetUserStatus(user).Result;
             Assert.IsTrue(readedStatus2 == status2);
+        }
+
+        [TestMethod]
+        public void AddChat_OneBotTwoChats()
+        {
+            var botid = PseudoUnicIdsGenerator.Get();
+            var chatid1 = PseudoUnicIdsGenerator.Get();
+            var chatid2 = PseudoUnicIdsGenerator.Get();
+
+            state?.AddChat(botid, chatid1, "111").Wait();
+            state?.AddChat(botid, chatid2, "111").Wait();
+        }
+
+        [TestMethod]
+        public void SetHelp_GetHelp_OneBotOneChat()
+        {
+            var text1 = "111";
+            var text2 = "1asda—ã—Ñ—ã—Ñ—Ñ—ë—ë—ë–Å–Å—ë—ë—ë—ë—ë```11";
+            var botid = PseudoUnicIdsGenerator.Get();
+            var chatid1 = PseudoUnicIdsGenerator.Get();
+
+            state?.AddChat(botid, chatid1, text1).Wait();
+            var text = state?.GetHelp(botid, chatid1).Result;
+            Assert.IsNotNull(text);
+            Assert.IsTrue(text == text1);
+
+            state?.SetHelp(botid, chatid1, text2).Wait();
+            text = state?.GetHelp(botid, chatid1).Result;
+            Assert.IsNotNull(text);
+            Assert.IsTrue(text == text2);
+        }
+
+        [TestMethod]
+        public void AddChat_OneBotTwoChats_ThrowsException()
+        {
+            var botid = PseudoUnicIdsGenerator.Get();
+            var chatid1 = PseudoUnicIdsGenerator.Get();
+            var chatid2 = PseudoUnicIdsGenerator.Get();
+
+            state?.AddChat(botid, chatid1, "111").Wait();
+            try
+            {
+                state?.AddChat(botid, chatid1, "111").Wait();
+                Assert.Fail();
+            }
+            catch {}
+            
+            state?.AddChat(botid, chatid2, "111").Wait();
+        }
+
+        [TestMethod]
+        public void AddChat_GetState_OneBotTwoChats_ThrowsException()
+        {
+            var botid = PseudoUnicIdsGenerator.Get();
+            var chatid1 = PseudoUnicIdsGenerator.Get();
+            var chatid2 = PseudoUnicIdsGenerator.Get();
+
+            state?.AddChat(botid, chatid1, "111").Wait();
+            try
+            {
+                state?.AddChat(botid, chatid1, "111").Wait();
+                Assert.Fail();
+            }
+            catch { }
+
+            state?.AddChat(botid, chatid2, "111").Wait();
+            var botState = state?.GetState(botid, chatid2).Result;
+            Assert.IsNotNull(botState);
+            Assert.IsTrue(((BotStatus)botState[0]) == BotStatus.Common);
+        }
+
+        [TestMethod]
+        public void AddChat_GetState_SetState_OneBotTwoChats_ThrowsException()
+        {
+            var botid = PseudoUnicIdsGenerator.Get();
+            var chatid1 = PseudoUnicIdsGenerator.Get();
+            var chatid2 = PseudoUnicIdsGenerator.Get();
+
+            state?.AddChat(botid, chatid1, "111").Wait();
+            try
+            {
+                state?.AddChat(botid, chatid1, "111").Wait();
+                Assert.Fail();
+            }
+            catch { }
+
+            state?.AddChat(botid, chatid2, "111").Wait();
+            var botState = state?.GetState(botid, chatid2).Result;
+            Assert.IsNotNull(botState);
+            Assert.IsTrue(((BotStatus)botState[0]) == BotStatus.Common);
+            botState[0] = (byte)BotStatus.Overrun;
+            state?.SetState(botid, chatid2, botState);
+            botState = state?.GetState(botid, chatid2).Result;
+            Assert.IsNotNull(botState);
+            Assert.IsTrue(((BotStatus)botState[0]) == BotStatus.Overrun);
+        }
+
+        [TestMethod]
+        public void AddChat_GetHelp_OneBotTwoChats_ThrowsException()
+        {
+            var text = "asdsaas122``—ã—ã—ã";
+            var botid = PseudoUnicIdsGenerator.Get();
+            var chatid1 = PseudoUnicIdsGenerator.Get();
+            var chatid2 = PseudoUnicIdsGenerator.Get();
+
+            state?.AddChat(botid, chatid1, text).Wait();
+            try
+            {
+                state?.AddChat(botid, chatid1, text).Wait();
+                Assert.Fail();
+            }
+            catch { }
+
+            state?.AddChat(botid, chatid2, text).Wait();
+            var help = state?.GetHelp(botid, chatid2).Result;
+            Assert.IsNotNull(help);
+            Assert.IsTrue(help == text);
         }
 
         [TestMethod]
