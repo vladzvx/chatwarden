@@ -42,17 +42,17 @@ namespace ChatWarden.CoreLib.Bot
             await _box.Call("add_message", TarantoolTuple.Create(userId, chatId??ChatId, messageNumber, time));
         }
 
-        internal async Task<long[]> GetMessages(long userId, long chatId)
+        internal async Task<long[]> GetMessages(long userId, long? chatId = null)
         {
-            var tmp = await _box.Call<TarantoolTuple<long, long>, long[]>("get_messages", TarantoolTuple.Create(userId, chatId));
+            var tmp = await _box.Call<TarantoolTuple<long, long>, long[]>("get_messages", TarantoolTuple.Create(userId, chatId??ChatId));
             return tmp.Data[0];
         }
         #endregion
 
         #region chat profile settings
-        internal async Task AddChat(long botId, long chatId, string helpText)
+        internal async Task AddChat(string helpText)
         {
-            await _box.Call("add_chat", TarantoolTuple.Create(botId, chatId, new byte[] { (byte)Mode.Common }, helpText));
+            await _box.Call("add_chat", TarantoolTuple.Create(BotId, ChatId, new byte[] { (byte)Mode.Common }, helpText));
         }
 
         internal async Task AddBanReplic(long botId, long chatId, string text)
