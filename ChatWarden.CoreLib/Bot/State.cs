@@ -8,6 +8,13 @@ namespace ChatWarden.CoreLib.Bot
     {
         public readonly long BotId;
         public readonly long ChatId;
+        public readonly Guid Id;
+        public Mode Status => (Mode)GetState().Result[0];
+        public string HelpText => GetHelp().Result;
+        public string BanReplic => GetBanReplics().Result.GetRandom();
+        public string MediaReplic => GetMediaReplics().Result.GetRandom();
+        public string RestrictReplic => GetRestrictReplics().Result.GetRandom();
+
         private readonly Box _box;
 
         public State(Box box, long botId, long chatId)
@@ -15,13 +22,11 @@ namespace ChatWarden.CoreLib.Bot
             _box = box;
             BotId = botId;
             ChatId = chatId;
+            var bytesForId = new byte[16];
+            BitConverter.GetBytes(botId).CopyTo(bytesForId,0);
+            BitConverter.GetBytes(chatId).CopyTo(bytesForId,8);
+            Id = new Guid(bytesForId);
         }
-
-        public Mode Status => (Mode)GetState().Result[0];
-        public string HelpText => GetHelp(BotId, ChatId).Result;
-        public string BanReplic => GetBanReplics().Result.GetRandom();
-        public string MediaReplic => GetMediaReplics(BotId, ChatId).Result.GetRandom();
-        public string RestrictReplic => GetRestrictReplics().Result.GetRandom();
 
         #region users
         internal async Task<UserStatus> GetUserStatus(long id)
@@ -77,7 +82,7 @@ namespace ChatWarden.CoreLib.Bot
             await _box.Call("add_media_replic", TarantoolTuple.Create(BotId, ChatId, text));
         }
 
-        internal async Task<string[]> GetMediaReplics(long botId, long chatId)
+        internal async Task<string[]> GetMediaReplics()
         {
             var tmp = await _box.Call<TarantoolTuple<long, long>, string[]>("get_media_replics", TarantoolTuple.Create(BotId, ChatId));
             return tmp.Data[0];
@@ -100,20 +105,20 @@ namespace ChatWarden.CoreLib.Bot
             return tmp.Data[0];
         }
 
-        internal async Task SetState(long botId, long chatId, byte[] state)
+        internal async Task SetState(byte[] state)
         {
-            await _box.Call<TarantoolTuple<long, long, byte[]>>("set_state", TarantoolTuple.Create(botId, chatId, state));
+            await _box.Call<TarantoolTuple<long, long, byte[]>>("set_state", TarantoolTuple.Create(BotId, ChatId, state));
         }
 
-        internal async Task<string> GetHelp(long botId, long chatId)
+        internal async Task<string> GetHelp()
         {
-            var tmp = await _box.Call<TarantoolTuple<long, long>, string>("get_help", TarantoolTuple.Create(botId, chatId));
+            var tmp = await _box.Call<TarantoolTuple<long, long>, string>("get_help", TarantoolTuple.Create(BotId, ChatId));
             return tmp.Data[0];
         }
 
-        internal async Task SetHelp(long botId, long chatId, string text)
+        internal async Task SetHelp(string text)
         {
-            await _box.Call<TarantoolTuple<long, long, string>>("set_help", TarantoolTuple.Create(botId, chatId, text));
+            await _box.Call<TarantoolTuple<long, long, string>>("set_help", TarantoolTuple.Create(BotId, ChatId, text));
         }
         #endregion
     }

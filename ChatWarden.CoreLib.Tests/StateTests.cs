@@ -245,16 +245,16 @@ namespace ChatWarden.CoreLib.Tests
             var replic1 = "replic1";
             var replic2 = "replic2";
             state?.AddChat("111").Wait();
-            var tmp = state?.GetMediaReplics(botid, chatid1).Result;
+            var tmp = state?.GetMediaReplics().Result;
             Assert.IsNotNull(tmp);
             Assert.IsTrue(tmp.Length == 0);
             state?.AddMediaReplic(replic1).Wait();
-            tmp = state?.GetMediaReplics(botid, chatid1).Result;
+            tmp = state?.GetMediaReplics().Result;
             Assert.IsNotNull(tmp);
             Assert.IsTrue(tmp.Length == 1);
             Assert.IsTrue(tmp.Contains(replic1));
             state?.AddMediaReplic(replic2).Wait();
-            tmp = state?.GetMediaReplics(botid, chatid1).Result;
+            tmp = state?.GetMediaReplics().Result;
             Assert.IsNotNull(tmp);
             Assert.IsTrue(tmp.Length == 2);
             Assert.IsTrue(tmp.Contains(replic1));
@@ -292,7 +292,7 @@ namespace ChatWarden.CoreLib.Tests
             tmp = state?.GetBanReplics().Result;
             Assert.IsNotNull(tmp);
             Assert.IsTrue(tmp.Length == 0);
-            tmp = state?.GetMediaReplics(botid, chatid1).Result;
+            tmp = state?.GetMediaReplics().Result;
             Assert.IsNotNull(tmp);
             Assert.IsTrue(tmp.Length == 0);
         }
@@ -310,12 +310,12 @@ namespace ChatWarden.CoreLib.Tests
 
 
             state?.AddChat(text1).Wait();
-            var text = state?.GetHelp(botid, chatid1).Result;
+            var text = state?.GetHelp().Result;
             Assert.IsNotNull(text);
             Assert.IsTrue(text == text1);
 
-            state?.SetHelp(botid, chatid1, text2).Wait();
-            text = state?.GetHelp(botid, chatid1).Result;
+            state?.SetHelp(text2).Wait();
+            text = state?.GetHelp().Result;
             Assert.IsNotNull(text);
             Assert.IsTrue(text == text2);
         }
@@ -394,7 +394,12 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(botState);
             Assert.IsTrue(((Mode)botState[0]) == Mode.Common);
             botState[0] = (byte)Mode.Overrun;
-            state?.SetState(botid, chatid2, botState);
+            state2?.SetState(botState);
+
+            botState = state?.GetState().Result;
+            Assert.IsNotNull(botState);
+            Assert.IsTrue(((Mode)botState[0]) == Mode.Common);
+
             botState = state2?.GetState().Result;
             Assert.IsNotNull(botState);
             Assert.IsTrue(((Mode)botState[0]) == Mode.Overrun);
@@ -422,7 +427,7 @@ namespace ChatWarden.CoreLib.Tests
             catch { }
 
             state2?.AddChat(text).Wait();
-            var help = state?.GetHelp(botid, chatid2).Result;
+            var help = state?.GetHelp().Result;
             Assert.IsNotNull(help);
             Assert.IsTrue(help == text);
         }
