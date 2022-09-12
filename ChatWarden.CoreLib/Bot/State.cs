@@ -37,9 +37,9 @@ namespace ChatWarden.CoreLib.Bot
         #endregion
 
         #region messages
-        internal async Task AddMessage(long userId, long chatId, long messageNumber, long time)
+        internal async Task AddMessage(long userId, long messageNumber, long time, long? chatId = null)
         {
-            await _box.Call("add_message", TarantoolTuple.Create(userId, chatId, messageNumber, time));
+            await _box.Call("add_message", TarantoolTuple.Create(userId, chatId??ChatId, messageNumber, time));
         }
 
         internal async Task<long[]> GetMessages(long userId, long chatId)
