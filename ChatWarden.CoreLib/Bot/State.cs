@@ -17,11 +17,11 @@ namespace ChatWarden.CoreLib.Bot
             ChatId = chatId;
         }
 
-        public Mode Status => (Mode)GetState(BotId, ChatId).Result[0];
+        public Mode Status => (Mode)GetState().Result[0];
         public string HelpText => GetHelp(BotId, ChatId).Result;
-        public string BanReplic => GetBanReplics(BotId, ChatId).Result.GetRandom();
+        public string BanReplic => GetBanReplics().Result.GetRandom();
         public string MediaReplic => GetMediaReplics(BotId, ChatId).Result.GetRandom();
-        public string RestrictReplic => GetRestrictReplics(BotId, ChatId).Result.GetRandom();
+        public string RestrictReplic => GetRestrictReplics().Result.GetRandom();
 
         #region users
         internal async Task<UserStatus> GetUserStatus(long id)
@@ -55,48 +55,48 @@ namespace ChatWarden.CoreLib.Bot
             await _box.Call("add_chat", TarantoolTuple.Create(BotId, ChatId, new byte[] { (byte)Mode.Common }, helpText));
         }
 
-        internal async Task AddBanReplic(long botId, long chatId, string text)
+        internal async Task AddBanReplic(string text)
         {
-            await _box.Call("add_ban_replic", TarantoolTuple.Create(botId, chatId, text));
+            await _box.Call("add_ban_replic", TarantoolTuple.Create(BotId, ChatId, text));
         }
 
-        internal async Task<string[]> GetBanReplics(long botId, long chatId)
+        internal async Task<string[]> GetBanReplics()
         {
-            var tmp = await _box.Call<TarantoolTuple<long, long>, string[]>("get_ban_replics", TarantoolTuple.Create(botId, chatId));
+            var tmp = await _box.Call<TarantoolTuple<long, long>, string[]>("get_ban_replics", TarantoolTuple.Create(BotId, ChatId));
             return tmp.Data[0];
         }
 
         internal async Task<string> GetRandomBanReplic()
         {
-            var tmp = await GetBanReplics(BotId, ChatId);
+            var tmp = await GetBanReplics();
             return tmp.GetRandom();
         }
 
-        internal async Task AddMediaReplic(long botId, long chatId, string text)
+        internal async Task AddMediaReplic(string text)
         {
-            await _box.Call("add_media_replic", TarantoolTuple.Create(botId, chatId, text));
+            await _box.Call("add_media_replic", TarantoolTuple.Create(BotId, ChatId, text));
         }
 
         internal async Task<string[]> GetMediaReplics(long botId, long chatId)
         {
-            var tmp = await _box.Call<TarantoolTuple<long, long>, string[]>("get_media_replics", TarantoolTuple.Create(botId, chatId));
+            var tmp = await _box.Call<TarantoolTuple<long, long>, string[]>("get_media_replics", TarantoolTuple.Create(BotId, ChatId));
             return tmp.Data[0];
         }
 
-        internal async Task AddRestrictReplic(long botId, long chatId, string text)
+        internal async Task AddRestrictReplic(string text)
         {
-            await _box.Call("add_restrict_replic", TarantoolTuple.Create(botId, chatId, text));
+            await _box.Call("add_restrict_replic", TarantoolTuple.Create(BotId, ChatId, text));
         }
 
-        internal async Task<string[]> GetRestrictReplics(long botId, long chatId)
+        internal async Task<string[]> GetRestrictReplics()
         {
-            var tmp = await _box.Call<TarantoolTuple<long, long>, string[]>("get_restrict_replics", TarantoolTuple.Create(botId, chatId));
+            var tmp = await _box.Call<TarantoolTuple<long, long>, string[]>("get_restrict_replics", TarantoolTuple.Create(BotId, ChatId));
             return tmp.Data[0];
         }
 
-        internal async Task<byte[]> GetState(long botId, long chatId)
+        internal async Task<byte[]> GetState()
         {
-            var tmp = await _box.Call<TarantoolTuple<long, long>, byte[]>("get_state", TarantoolTuple.Create(botId, chatId));
+            var tmp = await _box.Call<TarantoolTuple<long, long>, byte[]>("get_state", TarantoolTuple.Create(BotId, ChatId));
             return tmp.Data[0];
         }
 
