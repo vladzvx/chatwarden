@@ -1,5 +1,4 @@
-using ProGaudi.Tarantool.Client;
-using ProGaudi.Tarantool.Client.Model;
+using ChatWarden.CoreLib.Extentions;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -7,11 +6,11 @@ services.AddControllers();
 
 
 var tnt = Environment.GetEnvironmentVariable("TARANTOOL_CNNSTR");
-if (!string.IsNullOrEmpty(tnt))
+var token = Environment.GetEnvironmentVariable("TOKEN");
+
+if (!string.IsNullOrEmpty(tnt) && !string.IsNullOrEmpty(token))
 {
-    var box = new Box(new ClientOptions(tnt));
-    box.Connect().Wait();
-    services.AddSingleton(box);
+    services.AddHandler(tnt, token);
 }
 
 

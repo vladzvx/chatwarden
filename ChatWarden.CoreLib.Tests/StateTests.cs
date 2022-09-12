@@ -30,7 +30,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var user = PseudoUnicIdsGenerator.Get();
             var readedStatus1 = state?.GetUserStatus(user).Result;
@@ -44,7 +44,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state =  new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var user = PseudoUnicIdsGenerator.Get();
             var status = UserStatus.Admin;
@@ -60,7 +60,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var user = PseudoUnicIdsGenerator.Get();
             var status = UserStatus.Admin;
@@ -88,7 +88,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var user1 = PseudoUnicIdsGenerator.Get();
             var user2 = PseudoUnicIdsGenerator.Get();
@@ -112,7 +112,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var user1 = PseudoUnicIdsGenerator.Get();
             var user2 = PseudoUnicIdsGenerator.Get();
@@ -143,13 +143,13 @@ namespace ChatWarden.CoreLib.Tests
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
             var _chatid2 = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             //var localChat = PseudoUnicIdsGenerator.Get();
             var localBot = PseudoUnicIdsGenerator.Get();
 
             Assert.IsNotNull(box);
-            var localState = new State(box, localBot, _chatid2);
+            var localState = new ChatState(box, localBot, _chatid2);
             var user = PseudoUnicIdsGenerator.Get();
             var status = UserStatus.Admin;
             var status2 = UserStatus.Common;
@@ -169,13 +169,13 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var localChat = PseudoUnicIdsGenerator.Get();
             var localBot = PseudoUnicIdsGenerator.Get();
 
             Assert.IsNotNull(box);
-            var localState = new State(box, localBot, localChat);
+            var localState = new ChatState(box, localBot, localChat);
             var user = PseudoUnicIdsGenerator.Get();
             var status = UserStatus.Admin;
             var status2 = UserStatus.Common;
@@ -198,8 +198,8 @@ namespace ChatWarden.CoreLib.Tests
             var chatid1 = PseudoUnicIdsGenerator.Get();
             var chatid2 = PseudoUnicIdsGenerator.Get();
 
-            var state = new State(box, _botid, chatid1);
-            var state2 = new State(box, _botid, chatid2);
+            var state = new ChatState(box, _botid, chatid1);
+            var state2 = new ChatState(box, _botid, chatid2);
 
             state?.AddChat("111").Wait();
             state2?.AddChat("111").Wait();
@@ -212,7 +212,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var botid = PseudoUnicIdsGenerator.Get();
             var chatid1 = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, botid, chatid1);
+            var state = new ChatState(box, botid, chatid1);
 
             var replic1 = "replic1";
             var replic2 = "replic2";
@@ -239,7 +239,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var botid = PseudoUnicIdsGenerator.Get();
             var chatid1 = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, botid, chatid1);
+            var state = new ChatState(box, botid, chatid1);
 
 
             var replic1 = "replic1";
@@ -270,7 +270,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var botid = PseudoUnicIdsGenerator.Get();
             var chatid1 = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, botid, chatid1);
+            var state = new ChatState(box, botid, chatid1);
 
             var replic1 = "replic1";
             var replic2 = "replic2";
@@ -306,7 +306,7 @@ namespace ChatWarden.CoreLib.Tests
             var text2 = "1asdaыфыффёёёЁЁёёёёё```11";
             var botid = PseudoUnicIdsGenerator.Get();
             var chatid1 = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, botid, chatid1);
+            var state = new ChatState(box, botid, chatid1);
 
 
             state?.AddChat(text1).Wait();
@@ -326,12 +326,12 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var botid = PseudoUnicIdsGenerator.Get();
 
             var chatid2 = PseudoUnicIdsGenerator.Get();
-            var state2 = new State(box, botid, chatid2);
+            var state2 = new ChatState(box, botid, chatid2);
             state?.AddChat("111").Wait();
             try
             {
@@ -353,8 +353,8 @@ namespace ChatWarden.CoreLib.Tests
 
             var botid = PseudoUnicIdsGenerator.Get();
             var chatid2 = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
-            var state2 = new State(box, botid, chatid2);
+            var state = new ChatState(box, _botid, _chatid);
+            var state2 = new ChatState(box, botid, chatid2);
 
             state?.AddChat("111").Wait();
             try
@@ -376,11 +376,11 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var botid = PseudoUnicIdsGenerator.Get();
             var chatid2 = PseudoUnicIdsGenerator.Get();
-            var state2 = new State(box, botid, chatid2);
+            var state2 = new ChatState(box, botid, chatid2);
             state?.AddChat("111").Wait();
             try
             {
@@ -411,12 +411,12 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var text = "asdsaas122``ыыы";
             var botid = PseudoUnicIdsGenerator.Get();
             var chatid2 = PseudoUnicIdsGenerator.Get();
-            var state2 = new State(box, botid, chatid2);
+            var state2 = new ChatState(box, botid, chatid2);
 
             state?.AddChat(text).Wait();
             try
@@ -438,7 +438,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var user1 = PseudoUnicIdsGenerator.Get();
             var number1 = 1L;
@@ -461,7 +461,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var user1 = PseudoUnicIdsGenerator.Get();
             var number1 = 1L;
@@ -488,7 +488,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var user1 = PseudoUnicIdsGenerator.Get();
             var chatid2 = PseudoUnicIdsGenerator.Get();
@@ -517,7 +517,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsNotNull(box);
             var _botid = PseudoUnicIdsGenerator.Get();
             var _chatid = PseudoUnicIdsGenerator.Get();
-            var state = new State(box, _botid, _chatid);
+            var state = new ChatState(box, _botid, _chatid);
 
             var user1 = PseudoUnicIdsGenerator.Get();
             var user2 = PseudoUnicIdsGenerator.Get();
