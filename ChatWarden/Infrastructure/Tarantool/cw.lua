@@ -104,6 +104,36 @@ function add_chat(bot_id,chat_id,state,help_text)
     ,ban_replics = {},media_replics = {},restrict_replics = {}})
 end
 
+function add_to_array(bot_id,chat_id,number,data)
+    local tmp = get_field(bot_id,chat_id,{},number)
+    table.insert(tmp,data)
+    crud.update("bot_profiles",{bot_id,chat_id},{{'=', number, tmp}})
+end
+
+function add_ban_replic(bot_id,chat_id,data)
+    add_to_array(bot_id,chat_id,5,data)
+end
+
+function add_media_replic(bot_id,chat_id,data)
+    add_to_array(bot_id,chat_id,6,data)
+end
+
+function add_restrict_replic(bot_id,chat_id,data)
+    add_to_array(bot_id,chat_id,7,data)
+end
+
+function get_ban_replics(bot_id,chat_id)
+    return get_field(bot_id,chat_id,{},5)
+end
+
+function get_media_replics(bot_id,chat_id)
+    return get_field(bot_id,chat_id,{},6)
+end
+
+function get_restrict_replics(bot_id,chat_id)
+    return get_field(bot_id,chat_id,{},7)
+end
+
 function get_state (bot_id,chat_id)
     return get_field(bot_id,chat_id,"\0",3)
 end
@@ -120,7 +150,7 @@ function get_help (bot_id,chat_id)
     return get_field(bot_id,chat_id,"",4)
 end
 
-function get_field (bot_id,chat_id,defa, numb)
+function get_field(bot_id,chat_id,defa, numb)
     local res = crud.select("bot_profiles",{{'==', 'id', {bot_id,chat_id}}}).rows
     if  table.maxn(res) == 0 then
         return defa
@@ -172,4 +202,5 @@ return {
     add_message = add_message,
     get_messages = get_messages,
     set_help = set_help,
+    add_ban_replic = add_ban_replic,
 }

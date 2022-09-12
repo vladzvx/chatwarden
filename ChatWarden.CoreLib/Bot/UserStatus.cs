@@ -1,4 +1,4 @@
-﻿namespace ChatWarden.Bot.State
+﻿namespace ChatWarden.CoreLib.Bot
 {
     public enum UserStatus : byte
     {
