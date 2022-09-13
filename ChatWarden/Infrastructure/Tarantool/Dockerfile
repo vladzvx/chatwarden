@@ -13,6 +13,7 @@ RUN yum install -y git \
 RUN curl -L https://tarantool.io/nBkMdwS/release/2/installer.sh | bash
 RUN yum install -y tarantool tarantool-devel
 RUN yum install -y cartridge-cli
+RUN yum install -y tarantool-queue
 
 WORKDIR /app
 RUN cartridge create --name cw && cd cw

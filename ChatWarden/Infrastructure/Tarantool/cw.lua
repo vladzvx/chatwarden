@@ -2,7 +2,7 @@
 local crud = require('crud')
 local uuid = require('uuid')
 local role_name = 'cw'
-
+local queue = require("queue")
 
 local function init(opts)
     box.cfg{
@@ -84,6 +84,10 @@ local function init(opts)
         messages:create_index('bucket_id', {
             parts = {'bucket_id'}, unique = false,
             if_not_exists = true });
+
+        queue.cfg({ttr = 4*60*60, in_replicaset = true})
+        queue.create_tube('orders', 'fifo', {temporary = false});
+
     end
 end
 
@@ -93,6 +97,22 @@ end
 
 function test()
     return "ok"
+end
+
+function add_order(order)
+    queue.tube.orders:put(order)
+end
+
+function ack_order(task_id)
+    queue.tube.orders:ack(task_id)
+end
+
+function return_order(task_id)
+    queue.tube.orders:release(task_id)
+end
+
+function get_order()
+    return queue.tube.orders:take()
 end
 
 --function set_status(user_id,bot_id,chat_id,status)
