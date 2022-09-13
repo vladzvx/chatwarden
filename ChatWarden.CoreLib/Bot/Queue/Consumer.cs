@@ -87,6 +87,7 @@ namespace ChatWarden.CoreLib.Bot.Queue
                                 }
                             }
                         }
+                        await AckOrder(order.taskId);
 
                     }
                     catch (Exception)
