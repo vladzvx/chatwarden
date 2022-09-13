@@ -2,7 +2,9 @@
 {
     public enum UserStatus : byte
     {
-        Common = 0,
+        Unknown = 0,
+        Banned = 1,
+        Common = 10,
         Priveleged = 50,
         Admin = 100,
         SuperAdmin = 255,

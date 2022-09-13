@@ -18,11 +18,11 @@ namespace ChatWarden.CoreLib.Bot
         }
 
         public readonly StateId Id;
-        public Mode Status => (Mode)GetState().Result[0];
-        public string HelpText => GetHelp().Result;
-        public string BanReplic => GetRandomBanReplic().Result;
-        public string MediaReplic => GetRandomMediaReplic().Result;
-        public string RestrictReplic => GetRandomRestrictReplic().Result;
+        public ValueTask<Mode> Status => GetMode();
+        public Task<string> HelpText => GetHelp();
+        public Task<string> BanReplic => GetRandomBanReplic();
+        public Task<string> MediaReplic => GetRandomMediaReplic();
+        public Task<string> RestrictReplic => GetRandomRestrictReplic();
 
         private readonly Box _box;
 
@@ -59,6 +59,19 @@ namespace ChatWarden.CoreLib.Bot
         #endregion
 
         #region chat profile settings
+        internal async ValueTask<Mode> GetMode()
+        {
+            var tmp = await GetState();
+            if (tmp.Length > 0 && Enum.IsDefined(typeof(Mode), tmp[0]))
+            {
+                return (Mode)tmp[0];
+            }
+            else
+            {
+                return Mode.Common;
+            }
+        }
+
         internal async Task AddChat(string helpText)
         {
             await _box.Call("add_chat", TarantoolTuple.Create(Id.BotId, Id.ChatId, new byte[] { (byte)Mode.Common }, helpText));

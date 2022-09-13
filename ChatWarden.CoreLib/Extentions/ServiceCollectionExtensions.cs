@@ -1,4 +1,5 @@
 ﻿using ChatWarden.CoreLib.Bot;
+using ChatWarden.CoreLib.Bot.Queue;
 using ChatWarden.CoreLib.Bot.UpdatesProcessing;
 using ChatWarden.CoreLib.Bot.UpdatesProcessing.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,13 +17,24 @@ namespace ChatWarden.CoreLib.Extentions
             services.AddBoxIfNeed(tarantoolConnectionString);
 
             services.AddSingleton<BotState>();
-            services.AddSingleton<IUpdatesProcessor, UpdatesProcessorDefault>();
             services.AddSingleton<ICustomUpdateHandler, CustomUpdateHandler>();
+
+            services.AddSingleton<Publisher>();
+            services.AddHostedService<Consumer>();
             services.AddHostedService<BotStarter>();
             return services;
         }
 
-        public static IServiceCollection AddBoxIfNeed(this IServiceCollection services, string tarantoolConnectionString)
+        public static IServiceCollection AddWorker(this IServiceCollection services, string tarantoolConnectionString, string token)
+        {
+            services.AddBotClientIfNeed(token);
+            services.AddBoxIfNeed(tarantoolConnectionString);
+
+            services.AddSingleton<BotState>();
+            services.AddSingleton<Consumer>();
+            return services;
+        }
+        internal static IServiceCollection AddBoxIfNeed(this IServiceCollection services, string tarantoolConnectionString)
         {
             services.AddSingleton<Box>(pr =>
             {
@@ -41,14 +53,7 @@ namespace ChatWarden.CoreLib.Extentions
             return services;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static IServiceCollection AddBotClientIfNeed(this IServiceCollection services, string token)
+        internal static IServiceCollection AddBotClientIfNeed(this IServiceCollection services, string token)
         {
             var id = token.GetBotId();
             if (id.HasValue)
@@ -71,18 +76,6 @@ namespace ChatWarden.CoreLib.Extentions
             {
                 throw new ArgumentException("Uncorrect bot token!");
             }
-        }
-
-        public static IServiceCollection AddWorker(this IServiceCollection services, string tarantoolConnectionString, string token)
-        {
-            services.AddBotClientIfNeed(token);
-            services.AddBoxIfNeed(tarantoolConnectionString);
-
-            services.AddSingleton<BotState>();
-            services.AddSingleton<IUpdatesProcessor, UpdatesProcessorDefault>();
-            services.AddSingleton<ICustomUpdateHandler, CustomUpdateHandler>();
-            services.AddHostedService<BotStarter>();
-            return services;
         }
     }
 }

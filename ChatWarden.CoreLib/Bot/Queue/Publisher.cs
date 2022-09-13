@@ -14,5 +14,10 @@ namespace ChatWarden.CoreLib.Bot.Queue
         {
             await _box.Call("add_order", TarantoolTuple.Create(order.Data));
         }
+
+        internal async Task Add(byte[] bytes)
+        {
+            await _box.Call("add_order", TarantoolTuple.Create(bytes));
+        }
     }
 }
