@@ -10,7 +10,7 @@ namespace ChatWarden.CoreLib.Bot.Queue
         {
         }
 
-        public async Task PublishOrder(IOrder order)
+        public async Task PublishOrder(OrderBase order)
         {
             await _box.Call("add_order", TarantoolTuple.Create(order.Data));
         }

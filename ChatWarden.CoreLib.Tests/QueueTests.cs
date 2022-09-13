@@ -1,5 +1,4 @@
-﻿using ChatWarden.CoreLib.Bot;
-using ChatWarden.CoreLib.Bot.Queue;
+﻿using ChatWarden.CoreLib.Bot.Queue;
 using ChatWarden.CoreLib.Tests.Models;
 using ChatWarden.CoreLib.Tests.Support;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,7 +7,6 @@ using ProGaudi.Tarantool.Client.Model;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Threading;
 
 namespace ChatWarden.CoreLib.Tests
 {
@@ -41,8 +39,11 @@ namespace ChatWarden.CoreLib.Tests
             var length = RandomNumberGenerator.GetInt32(1, 10);
             var bytes = new byte[length];
             for (int i = 0; i < length; i++)
-                bytes[i] =(byte)RandomNumberGenerator.GetInt32(0, 255);
-            var order = new TestOrder() { Data = bytes };
+            {
+                bytes[i] = (byte)RandomNumberGenerator.GetInt32(0, 255);
+            }
+
+            var order = new TestOrder(bytes);
             publisher.PublishOrder(order).Wait();
             var (taskId, data) = consumer.GetOrder().Result;
             Assert.IsTrue(data.SequenceEqual(bytes));
@@ -57,13 +58,19 @@ namespace ChatWarden.CoreLib.Tests
             var length1 = RandomNumberGenerator.GetInt32(1, 10);
             var bytes1 = new byte[length1];
             for (int i = 0; i < length1; i++)
+            {
                 bytes1[i] = (byte)RandomNumberGenerator.GetInt32(0, 255);
+            }
+
             var length2 = RandomNumberGenerator.GetInt32(1, 10);
             var bytes2 = new byte[length2];
             for (int i = 0; i < length2; i++)
+            {
                 bytes2[i] = (byte)RandomNumberGenerator.GetInt32(0, 255);
-            var order1 = new TestOrder() { Data = bytes1 };
-            var order2 = new TestOrder() { Data = bytes2 };
+            }
+
+            var order1 = new TestOrder(bytes1);
+            var order2 = new TestOrder(bytes2);
             publisher.PublishOrder(order1).Wait();
 
             publisher.PublishOrder(order2).Wait();
@@ -88,13 +95,19 @@ namespace ChatWarden.CoreLib.Tests
             var length1 = RandomNumberGenerator.GetInt32(1, 10);
             var bytes1 = new byte[length1];
             for (int i = 0; i < length1; i++)
+            {
                 bytes1[i] = (byte)RandomNumberGenerator.GetInt32(0, 255);
+            }
+
             var length2 = RandomNumberGenerator.GetInt32(1, 10);
             var bytes2 = new byte[length2];
             for (int i = 0; i < length2; i++)
+            {
                 bytes2[i] = (byte)RandomNumberGenerator.GetInt32(0, 255);
-            var order1 = new TestOrder() { Data = bytes1 };
-            var order2 = new TestOrder() { Data = bytes2 };
+            }
+
+            var order1 = new TestOrder(bytes1);
+            var order2 = new TestOrder(bytes2);
             publisher.PublishOrder(order1).Wait();
 
             publisher.PublishOrder(order2).Wait();

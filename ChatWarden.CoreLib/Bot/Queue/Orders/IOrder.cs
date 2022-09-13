@@ -1,13 +1,6 @@
-﻿using ProGaudi.Tarantool.Client.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChatWarden.CoreLib.Bot.Queue.Orders
+﻿namespace ChatWarden.CoreLib.Bot.Queue.Orders
 {
-    public interface IOrder
+    public abstract class OrderBase
     {
         internal static readonly byte[] EmptyData = new byte[1] { 0 };
         public enum OrderType : byte
@@ -15,16 +8,16 @@ namespace ChatWarden.CoreLib.Bot.Queue.Orders
             Empty = 0,
 
             DeleteMessage = 1,
-            SendMessage = 2,
+            SendTextMessage = 20,
 
-            BanUserForever = 20,
-            BanUserForTwoHours = 21,
-            RestrictMedia = 22,
-            RestrictSendingHour = 23,
-            RestrictSendingDay = 24,
-            RestrictSendingWeek = 25,
+            BanUserForever = 40,
+            BanUserForTwoHours = 41,
+            RestrictMedia = 42,
+            RestrictSendingHour = 43,
+            RestrictSendingDay = 44,
+            RestrictSendingWeek = 45,
         }
-        public byte[] Data { get; }
+        public byte[] Data { get; protected set; } = EmptyData;
         public OrderType Type => (OrderType)Data[0];
     }
 }

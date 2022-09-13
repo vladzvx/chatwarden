@@ -1,5 +1,4 @@
-﻿using ChatWarden.CoreLib.Bot.Queue.Orders;
-using ProGaudi.Tarantool.Client;
+﻿using ProGaudi.Tarantool.Client;
 using ProGaudi.Tarantool.Client.Model;
 
 namespace ChatWarden.CoreLib.Bot.Queue
@@ -10,10 +9,10 @@ namespace ChatWarden.CoreLib.Bot.Queue
         {
         }
 
-        internal async Task<(long taskId,byte[] data)> GetOrder()
+        internal async Task<(long taskId, byte[] data)> GetOrder()
         {
-            var tmp =await _box.Call<TarantoolTuple<long, string, byte[]>>("get_order");
-            return (tmp.Data[0].Item1,tmp.Data[0].Item3);
+            var tmp = await _box.Call<TarantoolTuple<long, string, byte[]>>("get_order");
+            return (tmp.Data[0].Item1, tmp.Data[0].Item3);
         }
 
         internal async Task ReturnOrder(long id)
