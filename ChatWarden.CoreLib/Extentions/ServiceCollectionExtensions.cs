@@ -31,9 +31,10 @@ namespace ChatWarden.CoreLib.Extentions
             services.AddBoxIfNeed(tarantoolConnectionString);
 
             services.AddSingleton<BotState>();
-            services.AddSingleton<Consumer>();
+            services.AddHostedService<Consumer>();
             return services;
         }
+
         internal static IServiceCollection AddBoxIfNeed(this IServiceCollection services, string tarantoolConnectionString)
         {
             services.AddSingleton<Box>(pr =>
