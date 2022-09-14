@@ -13,6 +13,11 @@ namespace ChatWarden.CoreLib.Bot
             _box = box;
         }
 
+        internal async Task DeleteMessage(long userId, long chatId, long messageNumber)
+        {
+            await _box.Call("del_message", TarantoolTuple.Create(userId, chatId, messageNumber));
+        }
+
         internal async Task AddMessage(long userId, long messageNumber, long time, long chatId)
         {
             await _box.Call("add_message", TarantoolTuple.Create(userId, chatId, messageNumber, time));

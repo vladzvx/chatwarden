@@ -58,7 +58,7 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                     #region Зачистка сообщений от каналов
                     if (update.Message != null && update.Message.From != null && update.Message.From.Username == "Channel_Bot")
                     {
-                        await _publisher.Add(DeleteMessageOrder.CreateByteArray(update.Message.Chat.Id, update.Message.MessageId));
+                        await _publisher.Add(DeleteMessageOrder.CreateByteArray(update.Message.From.Id, update.Message.Chat.Id, update.Message.MessageId));
                     }
                     #endregion
 
@@ -86,7 +86,7 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                         {
                             targetStatus = await _usersRepository.GetUserStatus(update.Message.ReplyToMessage.From.Id, botId, chatId);
                         }
-                        if (senderStatus >= UserStatus.Admin && targetStatus < UserStatus.Priveleged)
+                        if (senderStatus >= UserStatus.Admin && targetStatus < UserStatus.Priveleged && update.Message.From!=null)
                         {
                             switch (update.Message.Text)
                             {
@@ -96,7 +96,7 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                                     {
                                         await _usersRepository.SetUserStatus(update.Message.ReplyToMessage.From.Id, botId, chatId, update.Message.Text == "-a" ? UserStatus.Admin : UserStatus.Priveleged);
                                     }
-                                    await _publisher.Add(DeleteMessageOrder.CreateByteArray(update.Message.Chat.Id, update.Message.MessageId));
+                                    await _publisher.Add(DeleteMessageOrder.CreateByteArray(update.Message.From.Id, update.Message.Chat.Id, update.Message.MessageId));
                                     break;
                                 case "-w":
                                     await SetRestrictOrder(update.Message, OrderBase.OrderType.RestrictSendingWeek);
@@ -134,8 +134,6 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                                 await SetRestrictOrder(update.Message, OrderBase.OrderType.BanUserForever, true);
                             }
                         }
-                        //await _publisher.Add(DeleteMessageOrder.CreateByteArray(update.Message.Chat.Id, update.Message.MessageId));
-                        //return;
                     }
                     #endregion
 
@@ -208,7 +206,7 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                 var mesages = await _messagesRepository.GetMessages(message.From.Id, message.Chat.Id);
                 foreach (long id in mesages)
                 {
-                    await _publisher.Add(DeleteMessageOrder.CreateByteArray(message.Chat.Id, id));
+                    await _publisher.Add(DeleteMessageOrder.CreateByteArray(message.From.Id, message.Chat.Id, id));
                 }
             }
             else if (message.ReplyToMessage != null && message.ReplyToMessage.From != null)
@@ -220,12 +218,12 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                     var mesages = await _messagesRepository.GetMessages(message.ReplyToMessage.From.Id, message.Chat.Id);
                     foreach (long id in mesages)
                     {
-                        await _publisher.Add(DeleteMessageOrder.CreateByteArray(message.Chat.Id, id));
+                        await _publisher.Add(DeleteMessageOrder.CreateByteArray(message.ReplyToMessage.From.Id, message.Chat.Id, id));
                     }
                 }
                 else
                 {
-                    await _publisher.Add(DeleteMessageOrder.CreateByteArray(message.Chat.Id, message.ReplyToMessage.MessageId));
+                    await _publisher.Add(DeleteMessageOrder.CreateByteArray(message.ReplyToMessage.From.Id, message.Chat.Id, message.ReplyToMessage.MessageId));
                 }
                 #endregion
 
@@ -259,7 +257,9 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                 }
                 #endregion
             }
-            await _publisher.Add(DeleteMessageOrder.CreateByteArray(message.Chat.Id, message.MessageId));
+            if (message.From!=null)
+                await _publisher.Add(DeleteMessageOrder.CreateByteArray(message.From.Id, message.Chat.Id, message.MessageId));
+            else await _publisher.Add(DeleteMessageOrder.CreateByteArray(message.Chat.Id, message.MessageId));
         }
     }
 }

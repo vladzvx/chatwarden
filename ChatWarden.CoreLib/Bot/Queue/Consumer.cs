@@ -9,15 +9,17 @@ namespace ChatWarden.CoreLib.Bot.Queue
 {
     public class Consumer : ConsumerBase, IHostedService
     {
+        private readonly MessagesRepository _messagesRepository;
         private readonly ITelegramBotClient _telegramBotClient;
 #pragma warning disable IDE0052 // Удалить непрочитанные закрытые члены
         private Task? _workingTask;
 #pragma warning restore IDE0052 // Удалить непрочитанные закрытые члены
         private readonly CancellationTokenSource _cts;
-        public Consumer(Box box, ITelegramBotClient telegramBotClient) : base(box)
+        public Consumer(Box box, MessagesRepository messagesRepository, ITelegramBotClient telegramBotClient) : base(box)
         {
             _cts = new CancellationTokenSource();
             _telegramBotClient = telegramBotClient;
+            _messagesRepository = messagesRepository;
         }
 
         private async Task Worker(object cancellationToken)
@@ -48,6 +50,8 @@ namespace ChatWarden.CoreLib.Bot.Queue
                                             {
                                                 var ord = new DeleteMessageOrder(data);
                                                 await _telegramBotClient.DeleteMessageAsync(ord.ChatId, (int)ord.MessageNumber);
+                                                if (ord.UserId.HasValue)
+                                                    await _messagesRepository.DeleteMessage(ord.UserId.Value, ord.ChatId, ord.MessageNumber);
                                                 break;
                                             }
                                         case OrderType.BanUserForTwoHours:

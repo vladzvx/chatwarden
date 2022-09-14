@@ -11,12 +11,14 @@ namespace ChatWarden.CoreLib.Tests
         [TestMethod]
         public void DeleteMessageOrder_CreationTest()
         {
-            long chatId = PseudoUnicIdsGenerator.Get();
-            long messageNumber = PseudoUnicIdsGenerator.Get();
-            var bytes = DeleteMessageOrder.CreateByteArray(chatId, messageNumber);
+            var chatId = PseudoUnicIdsGenerator.Get();
+            var userId = PseudoUnicIdsGenerator.Get();
+            var messageNumber = PseudoUnicIdsGenerator.Get();
+            var bytes = DeleteMessageOrder.CreateByteArray(userId, chatId, messageNumber);
             var order = new DeleteMessageOrder(bytes);
             Assert.IsTrue(order.Type == OrderBase.OrderType.DeleteMessage);
             Assert.IsTrue(order.ChatId == chatId);
+            Assert.IsTrue(order.UserId == userId);
             Assert.IsTrue(order.MessageNumber == messageNumber);
         }
 

@@ -216,6 +216,18 @@ function get_status(user_id,bot_id,chat_id)
     end
 end
 
+function del_message(user_id,chat_id,message_number)
+    local tmp = crud.select("messages",{{'==', 'ids', {user_id,chat_id,message_number}}})
+    if tmp~=nil then
+        local count = table.maxn(tmp.rows)
+        if count>0 then
+            for i=1,count,1 do
+                crud.delete("messages",tmp.rows[i][1])
+            end
+        end
+    end
+end
+
 function add_message(user_id,chat_id,message_number,time)
     crud.insert_object("messages",{id = uuid.new(),user_id = user_id,chat_id = chat_id,message_number = message_number, time = time})
 end

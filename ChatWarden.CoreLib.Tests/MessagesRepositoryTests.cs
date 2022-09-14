@@ -133,5 +133,45 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsTrue(q2.Contains(number3));
             Assert.IsTrue(q3.Contains(number1));
         }
+
+        [TestMethod]
+        public void AddMessage_DeleteMessage_GetMessagesTest_TwoChatsTwoUsers()
+        {
+            Assert.IsNotNull(box);
+            var _chatid = PseudoUnicIdsGenerator.Get();
+            var state = new MessagesRepository(box);
+
+            var user1 = PseudoUnicIdsGenerator.Get();
+            var user2 = PseudoUnicIdsGenerator.Get();
+            var chatid2 = PseudoUnicIdsGenerator.Get();
+            var number1 = 1L;
+            var number2 = 2L;
+            var number3 = 3L;
+            state?.AddMessage(user1, number1, 11, _chatid).Wait();
+            state?.AddMessage(user2, number1, 11, _chatid).Wait();
+            state?.AddMessage(user1, number2, 11, _chatid).Wait();
+            state?.AddMessage(user1, number3, 11, _chatid).Wait();
+            state?.AddMessage(user1, number3, 11, chatid2).Wait();
+            var q1 = state?.GetMessages(user1, _chatid).Result;
+            var q2 = state?.GetMessages(user1, chatid2).Result;
+            var q3 = state?.GetMessages(user2, _chatid).Result;
+
+            Assert.IsNotNull(q1);
+            Assert.IsNotNull(q2);
+            Assert.IsNotNull(q3);
+            Assert.IsTrue(q1.Length == 3);
+            Assert.IsTrue(q2.Length == 1);
+            Assert.IsTrue(q3.Length == 1);
+            Assert.IsTrue(q1.Contains(number1));
+            Assert.IsTrue(q1.Contains(number2));
+            Assert.IsTrue(q1.Contains(number3));
+            Assert.IsTrue(q2.Contains(number3));
+            Assert.IsTrue(q3.Contains(number1));
+            state?.DeleteMessage(user1, _chatid, number3).Wait();
+            q1 = state?.GetMessages(user1, _chatid).Result;
+            Assert.IsTrue(q1.Contains(number1));
+            Assert.IsTrue(q1.Contains(number2));
+            Assert.IsFalse(q1.Contains(number3));
+        }
     }
 }
