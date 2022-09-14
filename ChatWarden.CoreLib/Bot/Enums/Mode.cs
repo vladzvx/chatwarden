@@ -2,6 +2,7 @@
 {
     public enum Mode : byte
     {
+        Unknown,
         Common,
         Overrun
     }

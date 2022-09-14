@@ -14,12 +14,13 @@ services:
     environment:
       TARANTOOL_CNNSTR: "${TARANTOOL_USER}:${TARANTOOL_PWD}@${TARANTOOL_HOST}:${TARANTOOL_INTERNAL_PORT}"
       TOKEN: "${TOKEN}"
+      STATE_PASSWORD: "${STATE_PASSWORD}"
 
   tarantool:
     container_name: Tarantool
     hostname: ${TARANTOOL_HOST}
     build:
-      context: ChatWarden/Infrastructure/Tarantool
+      context: ChatWarden.CoreLib/Infrastructure/Tarantool
       dockerfile: Dockerfile
         
     ports:

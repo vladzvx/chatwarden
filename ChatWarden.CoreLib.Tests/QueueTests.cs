@@ -15,7 +15,7 @@ namespace ChatWarden.CoreLib.Tests
     {
         private static Box? box;
         private static Publisher? publisher;
-        private static Consumer? consumer;
+        private static ConsumerBase? consumer;
 
         [ClassInitialize]
 #pragma warning disable IDE0060 // Удалите неиспользуемый параметр
@@ -28,7 +28,7 @@ namespace ChatWarden.CoreLib.Tests
             box = new Box(new ClientOptions(tnt));
             box.Connect().Wait();
             publisher = new Publisher(box);
-            consumer = new Consumer(box);
+            consumer = new ConsumerBase(box);
         }
 
         [TestMethod]

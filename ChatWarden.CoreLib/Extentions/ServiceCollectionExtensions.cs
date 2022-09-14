@@ -13,70 +13,19 @@ namespace ChatWarden.CoreLib.Extentions
     {
         public static IServiceCollection AddHandler(this IServiceCollection services, string tarantoolConnectionString, string token)
         {
-            services.AddBotClientIfNeed(token);
-            services.AddBoxIfNeed(tarantoolConnectionString);
-
+            services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(token));
+            var _box = new Box(new ClientOptions(tarantoolConnectionString));
+            _box.Connect().Wait();
+            services.AddSingleton(_box);
             services.AddSingleton<BotState>();
+            services.AddSingleton<UsersRepository>();
+            services.AddSingleton<MessagesRepository>();
             services.AddSingleton<ICustomUpdateHandler, CustomUpdateHandler>();
 
             services.AddSingleton<Publisher>();
             services.AddHostedService<Consumer>();
             services.AddHostedService<BotStarter>();
             return services;
-        }
-
-        public static IServiceCollection AddWorker(this IServiceCollection services, string tarantoolConnectionString, string token)
-        {
-            services.AddBotClientIfNeed(token);
-            services.AddBoxIfNeed(tarantoolConnectionString);
-
-            services.AddSingleton<BotState>();
-            services.AddHostedService<Consumer>();
-            return services;
-        }
-
-        internal static IServiceCollection AddBoxIfNeed(this IServiceCollection services, string tarantoolConnectionString)
-        {
-            services.AddSingleton<Box>(pr =>
-            {
-                var box = pr.GetRequiredService<Box>();
-                if (box == null)
-                {
-                    var _box = new Box(new ClientOptions(tarantoolConnectionString));
-                    _box.Connect().Wait();
-                    return _box;
-                }
-                else
-                {
-                    return box;
-                }
-            });
-            return services;
-        }
-
-        internal static IServiceCollection AddBotClientIfNeed(this IServiceCollection services, string token)
-        {
-            var id = token.GetBotId();
-            if (id.HasValue)
-            {
-                services.AddSingleton<ITelegramBotClient>(pr =>
-                {
-                    var client = pr.GetRequiredService<ITelegramBotClient>();
-                    if (client.BotId == id)
-                    {
-                        return client;
-                    }
-                    else
-                    {
-                        return new TelegramBotClient(token);
-                    }
-                });
-                return services;
-            }
-            else
-            {
-                throw new ArgumentException("Uncorrect bot token!");
-            }
         }
     }
 }

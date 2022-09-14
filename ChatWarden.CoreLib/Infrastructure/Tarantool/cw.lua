@@ -9,19 +9,36 @@ local function init(opts)
         memtx_memory= 256 * 1024 * 1024
     } 
     if opts.is_master then
-        local bot_space = box.schema.space.create('bot_profiles', {
+        local bot_state = box.schema.space.create('bot_state', {
                 format = {
                     {name = 'bot_id', type = 'integer'},--1
                     {name = 'chat_id', type = 'integer'},--2
-
                     {name = 'state', type = 'string'},--3
-                    {name = 'help_text', type = 'string'},--4
+                    {name = 'bucket_id', type = 'unsigned'},--6
+                },
+                if_not_exists = true,
+            });
 
-                    {name = 'ban_replics', type = 'array'},--5
-                    {name = 'media_replics', type = 'array'},--6
-                    {name = 'restrict_replics', type = 'array'},--7
+        bot_state:create_index('id', {type = 'TREE',
+            parts = { 
+                {field ='bot_id', is_nullable = false},
+                {field ='chat_id', is_nullable = false}
+            },
+            if_not_exists = true});
 
-                    {name = 'bucket_id', type = 'unsigned'},--8
+        bot_state:create_index('bucket_id', {
+            parts = {'bucket_id'}, unique = false,
+            if_not_exists = true
+            });
+
+        local bot_space = box.schema.space.create('bot_common', {
+                format = {
+                    {name = 'bot_id', type = 'integer'},--1
+                    {name = 'help_text', type = 'string'},--2
+                    {name = 'ban_replics', type = 'array'},--3
+                    {name = 'media_replics', type = 'array'},--4
+                    {name = 'restrict_replics', type = 'array'},--5
+                    {name = 'bucket_id', type = 'unsigned'},--6
                 },
                 if_not_exists = true,
             });
@@ -29,7 +46,6 @@ local function init(opts)
         bot_space:create_index('id', {type = 'TREE',
             parts = { 
                 {field ='bot_id', is_nullable = false},
-                {field ='chat_id', is_nullable = false}
             },
             if_not_exists = true});
 
@@ -119,59 +135,67 @@ end
  --   crud.replace_object("users",{user_id = user_id,bot_id = bot_id,chat_id = chat_id, status = status})
 --end
 
-function add_chat(bot_id,chat_id,state,help_text)
-    crud.insert_object("bot_profiles",{bot_id = bot_id,chat_id = chat_id,state = state,help_text = help_text
-    ,ban_replics = {},media_replics = {},restrict_replics = {}})
+function add_chat(bot_id,chat_id,state)
+    crud.insert_object("bot_state",{bot_id = bot_id,chat_id = chat_id,state = state})
 end
 
-function add_to_array(bot_id,chat_id,number,data)
-    local tmp = get_field(bot_id,chat_id,{},number)
+function add_bot(bot_id)
+    crud.insert_object("bot_common",{bot_id = bot_id,help_text = "",ban_replics={},media_replics={},restrict_replics={}})
+end
+
+function add_to_array(bot_id,number,data)
+    local tmp = get_field(bot_id,{},number)
     table.insert(tmp,data)
-    crud.update("bot_profiles",{bot_id,chat_id},{{'=', number, tmp}})
+    crud.update("bot_common",{bot_id},{{'=', number, tmp}})
 end
 
-function add_ban_replic(bot_id,chat_id,data)
-    add_to_array(bot_id,chat_id,5,data)
+function add_ban_replic(bot_id,data)
+    add_to_array(bot_id,3,data)
 end
 
-function add_media_replic(bot_id,chat_id,data)
-    add_to_array(bot_id,chat_id,6,data)
+function add_media_replic(bot_id,data)
+    add_to_array(bot_id,4,data)
 end
 
-function add_restrict_replic(bot_id,chat_id,data)
-    add_to_array(bot_id,chat_id,7,data)
+function add_restrict_replic(bot_id,data)
+    add_to_array(bot_id,5,data)
 end
 
-function get_ban_replics(bot_id,chat_id)
-    return get_field(bot_id,chat_id,{},5)
+function get_ban_replics(bot_id)
+    return get_field(bot_id,{},3)
 end
 
-function get_media_replics(bot_id,chat_id)
-    return get_field(bot_id,chat_id,{},6)
+function get_media_replics(bot_id)
+    return get_field(bot_id,{},4)
 end
 
-function get_restrict_replics(bot_id,chat_id)
-    return get_field(bot_id,chat_id,{},7)
+function get_restrict_replics(bot_id)
+    return get_field(bot_id,{},5)
 end
 
-function get_state (bot_id,chat_id)
-    return get_field(bot_id,chat_id,"\0",3)
+function get_state(bot_id,chat_id)
+    local res = crud.select("bot_state",{{'==', 'id', {bot_id,chat_id}}}).rows
+    if  table.maxn(res) == 0 then
+        return "\0"
+    else 
+        return res[1][3]
+    end
 end
 
-function set_state (bot_id,chat_id,state)
-    crud.update("bot_profiles",{bot_id,chat_id},{{'=', 'state', state}})
+function set_state(bot_id,chat_id,state)
+    crud.update("bot_state",{bot_id,chat_id},{{'=', 'state', state}})
 end
 
-function set_help (bot_id,chat_id,help_text)
-    crud.update("bot_profiles",{bot_id,chat_id},{{'=', 'help_text', help_text}})
+function set_help(bot_id,help_text)
+    crud.update("bot_common",{bot_id},{{'=', 'help_text', help_text}})
 end
 
-function get_help (bot_id,chat_id)
-    return get_field(bot_id,chat_id,"",4)
+function get_help(bot_id)
+    return get_field(bot_id,"",2)
 end
 
-function get_field(bot_id,chat_id,defa, numb)
-    local res = crud.select("bot_profiles",{{'==', 'id', {bot_id,chat_id}}}).rows
+function get_field(bot_id,defa, numb)
+    local res = crud.select("bot_common",{{'==', 'id', {bot_id}}}).rows
     if  table.maxn(res) == 0 then
         return defa
     else 
