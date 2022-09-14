@@ -177,7 +177,7 @@ namespace ChatWarden.CoreLib.Tests
             var state = new BotState(box, _botid);
 
             var chatid2 = PseudoUnicIdsGenerator.Get();
-            state?.AddChat( _chatid).Wait();
+            state?.AddChat(_chatid).Wait();
             state?.AddChat(chatid2).Wait();
             var botState = state?.GetChatState(chatid2).Result;
             Assert.IsNotNull(botState);

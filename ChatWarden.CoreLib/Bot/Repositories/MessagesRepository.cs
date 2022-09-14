@@ -1,5 +1,4 @@
-﻿using ChatWarden.CoreLib.Extentions;
-using ProGaudi.Tarantool.Client;
+﻿using ProGaudi.Tarantool.Client;
 using ProGaudi.Tarantool.Client.Model;
 
 namespace ChatWarden.CoreLib.Bot

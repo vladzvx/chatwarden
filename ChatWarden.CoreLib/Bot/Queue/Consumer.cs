@@ -51,7 +51,10 @@ namespace ChatWarden.CoreLib.Bot.Queue
                                                 var ord = new DeleteMessageOrder(data);
                                                 await _telegramBotClient.DeleteMessageAsync(ord.ChatId, (int)ord.MessageNumber);
                                                 if (ord.UserId.HasValue)
+                                                {
                                                     await _messagesRepository.DeleteMessage(ord.UserId.Value, ord.ChatId, ord.MessageNumber);
+                                                }
+
                                                 break;
                                             }
                                         case OrderType.BanUserForTwoHours:
@@ -99,7 +102,7 @@ namespace ChatWarden.CoreLib.Bot.Queue
                                         await ReturnOrder(taskId);
                                     }
                                 }
-                                catch (Exception ex)
+                                catch (Exception)
                                 {
 
                                 }
@@ -108,7 +111,7 @@ namespace ChatWarden.CoreLib.Bot.Queue
                         await AckOrder(taskId);
 
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
 
                     }

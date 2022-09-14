@@ -52,7 +52,10 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                     await _messagesRepository.AddMessage(userId, messageNumber, DateTime.UtcNow.Ticks, chatId);
                     var senderStatus = await _usersRepository.GetUserStatus(userId, botId, chatId);
                     var mode = Enum.IsDefined(typeof(Mode), status[0]) ? (Mode)status[0] : Mode.Unknown;
-                    if (mode == Mode.Unknown && update.Message!=null && update.Message.Text!=null && !update.Message.Text.Contains("/activate")) return;
+                    if (mode == Mode.Unknown && update.Message != null && update.Message.Text != null && !update.Message.Text.Contains("/activate"))
+                    {
+                        return;
+                    }
                     #endregion
 
                     #region Зачистка сообщений от каналов
@@ -65,20 +68,20 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                     #region Логирование пользователя вне режима набега
                     if (senderStatus == UserStatus.Unknown && mode != Mode.Overrun && update.Message != null && update.Message.From != null)
                     {
-                        await _usersRepository.SetUserStatus(userId,botId,chatId, UserStatus.Common);
+                        await _usersRepository.SetUserStatus(userId, botId, chatId, UserStatus.Common);
                     }
                     #endregion
 
                     #region Обработка режима набега
-                    if (update.Message != null && update.Message.From!=null && update.Message.From.Id!= 777000 && mode == Mode.Overrun && senderStatus <= UserStatus.Common)
+                    if (update.Message != null && update.Message.From != null && update.Message.From.Id != 777000 && mode == Mode.Overrun && senderStatus <= UserStatus.Common)
                     {
-                        await SetRestrictOrder(update.Message, OrderBase.OrderType.BanUserForTwoHours,overrun:true);
+                        await SetRestrictOrder(update.Message, OrderBase.OrderType.BanUserForTwoHours, overrun: true);
                         return;
                     }
                     #endregion
 
                     #region Обработка команд на ограничения пользователей
-                    
+
                     if (update.Message != null)
                     {
                         UserStatus targetStatus = UserStatus.Unknown;
@@ -86,7 +89,7 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                         {
                             targetStatus = await _usersRepository.GetUserStatus(update.Message.ReplyToMessage.From.Id, botId, chatId);
                         }
-                        if (senderStatus >= UserStatus.Admin && targetStatus < UserStatus.Priveleged && update.Message.From!=null)
+                        if (senderStatus >= UserStatus.Admin && targetStatus < UserStatus.Priveleged && update.Message.From != null)
                         {
                             switch (update.Message.Text)
                             {
@@ -145,7 +148,7 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                             if (senderStatus >= UserStatus.Admin)
                             {
                                 status[0] = (byte)Mode.Overrun;
-                                await _botState.SetChatState(status,chatId);
+                                await _botState.SetChatState(status, chatId);
                                 await _publisher.Add(SendTextMessageOrder.CreateByteArray(update.Message.Chat.Id, "Активирован режим набега!"));
                             }
                             await _publisher.Add(DeleteMessageOrder.CreateByteArray(update.Message.Chat.Id, update.Message.MessageId));
@@ -156,7 +159,7 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                             if (senderStatus >= UserStatus.Admin)
                             {
                                 status[0] = (byte)Mode.Common;
-                                await _botState.SetChatState(status,chatId);
+                                await _botState.SetChatState(status, chatId);
                                 await _publisher.Add(SendTextMessageOrder.CreateByteArray(update.Message.Chat.Id, "Деактивирован режим набега!"));
                             }
                             await _publisher.Add(DeleteMessageOrder.CreateByteArray(update.Message.Chat.Id, update.Message.MessageId));
@@ -181,7 +184,7 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
                                 if (token == match.Groups[1].Value)
                                 {
                                     await _botState.AddChat(chatId);
-                                    await _botState.SetChatState(new byte[] { (byte)Mode.Common}, chatId);
+                                    await _botState.SetChatState(new byte[] { (byte)Mode.Common }, chatId);
                                     await _usersRepository.SetUserStatus(userId, botId, chatId, UserStatus.SuperAdmin);
                                     await _publisher.Add(DeleteMessageOrder.CreateByteArray(update.Message.Chat.Id, update.Message.MessageId));
                                 }
@@ -198,7 +201,7 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
 
             }
         }
-        private async Task SetRestrictOrder(Message message, OrderBase.OrderType orderType, bool notify = false,bool overrun = false)
+        private async Task SetRestrictOrder(Message message, OrderBase.OrderType orderType, bool notify = false, bool overrun = false)
         {
             if (overrun && message.From != null)
             {
@@ -251,15 +254,20 @@ namespace ChatWarden.CoreLib.Bot.UpdatesProcessing
 
                         if (!string.IsNullOrEmpty(replicText))
                         {
-                            await _publisher.Add(SendTextMessageOrder.CreateByteArray(message.Chat.Id, message.ReplyToMessage.From.FirstName + " " + replicText +" "+ duration + "."));
+                            await _publisher.Add(SendTextMessageOrder.CreateByteArray(message.Chat.Id, message.ReplyToMessage.From.FirstName + " " + replicText + " " + duration + "."));
                         }
                     }
                 }
                 #endregion
             }
-            if (message.From!=null)
+            if (message.From != null)
+            {
                 await _publisher.Add(DeleteMessageOrder.CreateByteArray(message.From.Id, message.Chat.Id, message.MessageId));
-            else await _publisher.Add(DeleteMessageOrder.CreateByteArray(message.Chat.Id, message.MessageId));
+            }
+            else
+            {
+                await _publisher.Add(DeleteMessageOrder.CreateByteArray(message.Chat.Id, message.MessageId));
+            }
         }
     }
 }

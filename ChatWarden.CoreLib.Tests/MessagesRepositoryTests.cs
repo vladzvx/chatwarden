@@ -169,6 +169,7 @@ namespace ChatWarden.CoreLib.Tests
             Assert.IsTrue(q3.Contains(number1));
             state?.DeleteMessage(user1, _chatid, number3).Wait();
             q1 = state?.GetMessages(user1, _chatid).Result;
+            Assert.IsNotNull(q1);
             Assert.IsTrue(q1.Contains(number1));
             Assert.IsTrue(q1.Contains(number2));
             Assert.IsFalse(q1.Contains(number3));

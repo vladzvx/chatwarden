@@ -24,8 +24,14 @@ namespace ChatWarden.CoreLib.Bot
         {
             _box = box;
             if (botClient.BotId.HasValue)
+            {
                 BotId = botClient.BotId.Value;
-            else throw new ApplicationException("Failed init BotState: no id");
+            }
+            else
+            {
+                throw new ApplicationException("Failed init BotState: no id");
+            }
+
             try
             {
                 _box.Call("add_bot", TarantoolTuple.Create(BotId)).Wait();

@@ -13,7 +13,7 @@ services.AddSwaggerGen(c =>
         c.IncludeXmlComments(file);
     }
     c.UseInlineDefinitionsForEnums();
-    c.SwaggerDoc("v2", new OpenApiInfo { Title = "ChatWarden", Version = "v1"});
+    c.SwaggerDoc("v2", new OpenApiInfo { Title = "ChatWarden", Version = "v1" });
 }).AddSwaggerGenNewtonsoftSupport();
 
 var tnt = Environment.GetEnvironmentVariable("TARANTOOL_CNNSTR");

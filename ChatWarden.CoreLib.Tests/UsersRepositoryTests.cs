@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProGaudi.Tarantool.Client;
 using ProGaudi.Tarantool.Client.Model;
 using System;
-using System.Linq;
 
 namespace ChatWarden.CoreLib.Tests
 {
@@ -33,7 +32,7 @@ namespace ChatWarden.CoreLib.Tests
             var state = new UsersRepository(box);
 
             var user = PseudoUnicIdsGenerator.Get();
-            var readedStatus1 = state?.GetUserStatus(user, _botid,_chatid).Result;
+            var readedStatus1 = state?.GetUserStatus(user, _botid, _chatid).Result;
             Assert.IsNotNull(readedStatus1);
             Assert.IsTrue(readedStatus1.Value == UserStatus.Unknown);
         }
